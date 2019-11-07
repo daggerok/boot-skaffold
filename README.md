@@ -194,6 +194,7 @@ http :8080/actuator/info
 ## links
 For further reference, please consider the following sections:
 
+* https://www.youtube.com/watch?v=62GLbBDLiPE
 * https://skaffold-latest.firebaseapp.com/docs/pipeline-stages/builders/jib/
 * https://skaffold-latest.firebaseapp.com/docs/references/yaml/
 * [YouTube: Develop Faster on Kubernetes With Google Container Tools and Cloud Build (Cloud Next '19)](https://www.youtube.com/watch?v=TYx0BTyFtmc)
