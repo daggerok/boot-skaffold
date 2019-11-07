@@ -63,19 +63,27 @@ jobs:
         - cd $TRAVIS_BUILD_DIR
         #- wget -q -O - https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
         - curl -s https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
-        - k3d create --name dev --api-port 6551 --publish 8080:8080
+        - k3d create --name k3d --api-port 6551 --publish 80:80 --workers 2
         - sleep 30s
-        - export KUBECONFIG="$(k3d get-kubeconfig --name='dev')"
+        - export KUBECONFIG="$(k3d get-kubeconfig --name='k3d')"
         - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
         - chmod +x ./kubectl
         - mv ./kubectl ~/.local/bin/
         - kubectl cluster-info
         - kubectl get pods --all-namespaces
         - kubectl get all -o wide
-        #- curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
-        #- chmod +x skaffold
-        #- mv skaffold ~/.local/bin/
-        #- skaffold build
+        - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
+        - chmod +x skaffold
+        - mv skaffold ~/.local/bin/
+        #- skaffold
+        #- ./mvnw clean compile jib:dockerBuild
+        #- skaffold --images daggerok/boot-skaffold
+        - skaffold dev &
+        - sleep 2m
+        - http :/actuator/env | jq '.propertySources[].properties.HOSTNAME.value'
+        - http :/actuator/env | jq '.propertySources[].properties.HOSTNAME.value'
+        - http :/actuator/env | jq '.propertySources[].properties.HOSTNAME.value'
+        - http :/actuator/env | jq '.propertySources[].properties.HOSTNAME.value'
         - docker rm -f -v `docker ps -a -q`
         - cat ~/.config/k3d/k3d/kubeconfig.yaml
         - rm -rf ~/.config/k3d/k3d/kubeconfig.yaml

@@ -7,8 +7,30 @@ Using spring-boot maven project together with Google JIB and Skaffold
 * [level 2: no skaffold: jib docker workflow](#level-2-no-skaffold-jib-docker-workflow)
 * [level 3: skaffold pod workflow](#level-3-skaffold-pod-workflow)
 * [level 4: full skaffold jib workflow](#level-4-full-skaffold-jib-workflow)
-* [TODO: level 5: skaffold jib on k3d](#TODO-level-5-skaffold-jib-on-k3d)
+* [level 5: skaffold jib on k3d](#level-5-skaffold-jib-on-k3d)
 * [links](#links)
+
+
+## level 5: skaffold jib on k3d
+
+```bash
+brew reinstall skaffold k3d
+
+k3d create --name k3d --api-port 6551 --publish 80:80 --workers 2
+#...
+export KUBECONFIG="$(k3d get-kubeconfig --name='k3d')"
+kubectl cluster-info
+
+#skaffold init -f k8s-k3d.yaml
+#vi skaffold.yaml
+skaffold dev
+#...
+
+http :80
+
+docker rm -f -v `docker ps -aq`
+rm -rf ~/.config/k3d/k3d/kubeconfig.yaml
+```
 
 ## level 4: full skaffold jib workflow
 
@@ -167,21 +189,6 @@ http :8080/actuator/info
 ./mvnw package dockerBuild
 java -jar ./target/*.jar
 http :8080/actuator/info
-```
-
-## TODO: level 5: skaffold jib on k3d
-
-```bash
-brew reinstall skaffold k3d
-
-k3d create --name k3d --api-port 6551 --publish 8080:8080 --workers 1
-export KUBECONFIG="$(k3d get-kubeconfig --name='k3d')"
-kubectl cluster-info
-
-#skaffold init -f k8s-k3d.yaml
-#vi skaffold.yaml
-skaffold dev
-#...
 ```
 
 ## links
