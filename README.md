@@ -199,6 +199,7 @@ For further reference, please consider the following sections:
 * https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/#without-kubectl-proxy
 * https://github.com/rancher/k3d/blob/master/docs/examples.md
 * TODO: https://github.com/rancher/k3d/blob/master/docs/examples.md
+* https://medium.com/@yannalbou/k3d-k3s-k8s-perfect-match-for-dev-and-testing-896c8953acc0
 <!--
 * [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
 * [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.2.0.RELEASE/maven-plugin/)

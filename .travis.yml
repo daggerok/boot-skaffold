@@ -90,6 +90,7 @@ jobs:
         - http :/
         - http :/
         - kubectl delete -f k8s-k3d.yaml
+        - k3d stop --name=k3d
         - docker rm -f -v `docker ps -a -q`
         - cat ~/.config/k3d/k3d/kubeconfig.yaml
         - rm -rf ~/.config/k3d/k3d/kubeconfig.yaml
