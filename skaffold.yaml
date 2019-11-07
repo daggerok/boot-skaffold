@@ -7,6 +7,7 @@ build:
     - image: daggerok/boot-skaffold
       context: .
       jib:
+        type: maven
         args:
           - -e
 deploy:

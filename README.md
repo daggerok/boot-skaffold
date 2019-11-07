@@ -194,6 +194,7 @@ http :8080/actuator/info
 ## links
 For further reference, please consider the following sections:
 
+* https://skaffold-latest.firebaseapp.com/docs/references/yaml/
 * [YouTube: Develop Faster on Kubernetes With Google Container Tools and Cloud Build (Cloud Next '19)](https://www.youtube.com/watch?v=TYx0BTyFtmc)
 * https://stedolan.github.io/jq/manual/#Basicfilters
 * https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/#without-kubectl-proxy
