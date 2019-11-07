@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boot-skaffold-deployment
+  labels:
+    app: boot-skaffold
+spec:
+  selector:
+    matchLabels:
+      app: boot-skaffold
+  replicas: 2
+  template:
+    metadata:
+      name: boot-skaffold-deployment
+      labels:
+        app: boot-skaffold
+    spec:
+      containers:
+        - name: boot-skaffold-jib-image
+          image: daggerok/boot-skaffold
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: boot-skaffold-service
+  labels:
+    app: boot-skaffold
+spec:
+  ports:
+    - port: 8080
+      name: http
+  type: LoadBalancer
+  selector:
+    app: boot-skaffold

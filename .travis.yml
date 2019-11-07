@@ -1,0 +1,97 @@
+notifications:
+  email: false
+git:
+  quiet: true
+  depth: false
+language: java
+jdk: openjdk11
+node_js: lts/*
+python: 3.7
+matrix:
+  include:
+    - python: 3.7
+services:
+  - xvfb
+  - docker
+addons:
+  apt:
+    update: false
+    packages:
+      - jq
+      - bash
+      - curl
+      - tree
+      - docker-ce
+      - libxml2-utils
+      - libappindicator1
+      - fonts-liberation
+      - google-chrome-stable
+      - python3-setuptools
+      - python3-pip
+install: true
+before_install:
+  - export CHROME_BIN=/usr/bin/google-chrome
+  - export DISPLAY=:99.0
+  #
+  - |
+    if [ ! -f ${HOME}/.local/daggerok/bash-functions/master/main.bash ] ; then
+      mkdir -p ${HOME}/.local/daggerok/bash-functions/master ;
+      curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash > ${HOME}/.local/daggerok/bash-functions/master/main.bash ;
+    fi
+    source ${HOME}/.local/daggerok/bash-functions/master/main.bash ;
+  - stop_any 80 5432 8080
+  #
+  - export PATH=$HOME/.local/bin:$PATH
+  - pip -V
+  - docker-compose version
+  - pip3 install --user --upgrade pip
+  - pip install --user --upgrade httpie docker-compose
+  - http --version --debug
+  - pip -V
+  #
+  - stop_any 80 8080 5432
+  - docker-compose version
+env:
+  global:
+    - TERM=dumb
+jobs:
+  include:
+    - stage: test
+      name: integration test
+      jdk: openjdk11
+      script:
+        - cd $TRAVIS_BUILD_DIR && docker build -t daggerok/boot-skaffold .
+        - docker run -p 8080:8080 -d -it --rm --name boot-skaffold daggerok/boot-skaffold
+        - wait_healthy_docker_containers 1
+        - http :8080/actuator
+        - http :8080/actuator/info
+        - http :8080/actuator/health
+        - docker rm -f -v boot-skaffold
+    - stage: test
+      name: integration test
+      jdk: openjdk11
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mnvw
+        - java -jar ./target/*.jar &
+        - wait_for 8080
+        - http :8080/actuator
+        - http :8080/actuator/info
+        - http :8080/actuator/health
+        - stop_any 80 8080
+    - stage: test
+      name: integration test openjdk13
+      jdk: openjdk13
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mnvw
+        - java -jar ./target/*.jar &
+        - wait_for 8080
+        - http :8080/actuator
+        - http :8080/actuator/info
+        - http :8080/actuator/health
+        - stop_any 80 8080
+cache:
+  packages: true
+  directories:
+    - ~/.local/daggerok
+    - ~/.docker
+    - ~/.m2
