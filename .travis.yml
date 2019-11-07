@@ -57,6 +57,29 @@ env:
 jobs:
   include:
     - stage: test
+      name: k3d
+      jdk: openjdk11
+      script:
+        - cd $TRAVIS_BUILD_DIR
+        #- wget -q -O - https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
+        - curl -s https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
+        - k3d create --name dev --api-port 6551 --publish 8080:8080
+        - sleep 30s
+        - export KUBECONFIG="$(k3d get-kubeconfig --name='dev')"
+        - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+        - chmod +x ./kubectl
+        - mv ./kubectl ~/.local/bin/
+        - kubectl cluster-info
+        - kubectl get pods --all-namespaces
+        - kubectl get all -o wide
+        #- curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
+        #- chmod +x skaffold
+        #- mv skaffold ~/.local/bin/
+        #- skaffold build
+        - docker rm -f -v `docker ps -a -q`
+        - cat ~/.config/k3d/k3d/kubeconfig.yaml
+        - rm -rf ~/.config/k3d/k3d/kubeconfig.yaml
+    - stage: test
       name: integration test
       jdk: openjdk11
       script:
@@ -71,7 +94,7 @@ jobs:
       name: integration test
       jdk: openjdk11
       script:
-        - cd $TRAVIS_BUILD_DIR && ./mnvw
+        - cd $TRAVIS_BUILD_DIR && ./mvnw
         - java -jar ./target/*.jar &
         - wait_for 8080
         - http :8080/actuator
@@ -82,7 +105,7 @@ jobs:
       name: integration test openjdk13
       jdk: openjdk13
       script:
-        - cd $TRAVIS_BUILD_DIR && ./mnvw
+        - cd $TRAVIS_BUILD_DIR && ./mvnw
         - java -jar ./target/*.jar &
         - wait_for 8080
         - http :8080/actuator

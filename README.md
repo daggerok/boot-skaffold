@@ -7,6 +7,7 @@ Using spring-boot maven project together with Google JIB and Skaffold
 * [level 2: no skaffold: jib docker workflow](#level-2-no-skaffold-jib-docker-workflow)
 * [level 3: skaffold pod workflow](#level-3-skaffold-pod-workflow)
 * [level 4: full skaffold jib workflow](#level-4-full-skaffold-jib-workflow)
+* [TODO: level 5: skaffold jib on k3d](#TODO-level-5-skaffold-jib-on-k3d)
 * [links](#links)
 
 ## level 4: full skaffold jib workflow
@@ -168,11 +169,29 @@ java -jar ./target/*.jar
 http :8080/actuator/info
 ```
 
+## TODO: level 5: skaffold jib on k3d
+
+```bash
+brew reinstall skaffold k3d
+
+k3d create --name k3d --api-port 6551 --publish 8080:8080 --workers 1
+export KUBECONFIG="$(k3d get-kubeconfig --name='k3d')"
+kubectl cluster-info
+
+#skaffold init -f k8s-k3d.yaml
+#vi skaffold.yaml
+skaffold dev
+#...
+```
+
 ## links
 For further reference, please consider the following sections:
 
 * [YouTube: Develop Faster on Kubernetes With Google Container Tools and Cloud Build (Cloud Next '19)](https://www.youtube.com/watch?v=TYx0BTyFtmc)
 * https://stedolan.github.io/jq/manual/#Basicfilters
+* https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/#without-kubectl-proxy
+* https://github.com/rancher/k3d/blob/master/docs/examples.md
+* TODO: https://github.com/rancher/k3d/blob/master/docs/examples.md
 <!--
 * [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
 * [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.2.0.RELEASE/maven-plugin/)
