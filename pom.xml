@@ -112,7 +112,8 @@
                 <version>${jib-maven-plugin.version}</version>
                 <configuration>
                     <to>
-                        <image>daggerok/${project.artifactId}</image>
+                        <image>daggerok/${project.artifactId}:latest</image>
+                        <tags>latest</tags>
                     </to>
                     <container>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>

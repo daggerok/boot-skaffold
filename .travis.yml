@@ -66,24 +66,30 @@ jobs:
         - k3d create --name k3d --api-port 6551 --publish 80:80 --workers 2
         - sleep 30s
         - export KUBECONFIG="$(k3d get-kubeconfig --name='k3d')"
+        #
         - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
         - chmod +x ./kubectl
         - mv ./kubectl ~/.local/bin/
         - kubectl cluster-info
         - kubectl get pods --all-namespaces
-        - kubectl get all -o wide
-        - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
-        - chmod +x skaffold
-        - mv skaffold ~/.local/bin/
-        #- skaffold
+        #- curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
+        #- chmod +x skaffold
+        #- mv skaffold ~/.local/bin/
         #- ./mvnw clean compile jib:dockerBuild
         #- skaffold --images daggerok/boot-skaffold
-        - skaffold dev &
-        - sleep 2m
+        #- skaffold dev &
+        - kubectl get pods -o wide -w &
+        - kubectl apply -f k8s-k3d.yaml
+        - sleep 1m
+        - kubectl get all -o wide
         - http :/actuator/env | jq '.propertySources[].properties.HOSTNAME.value'
-        - http :/actuator/env | jq '.propertySources[].properties.HOSTNAME.value'
-        - http :/actuator/env | jq '.propertySources[].properties.HOSTNAME.value'
-        - http :/actuator/env | jq '.propertySources[].properties.HOSTNAME.value'
+        - http :/actuator/env | jq '.propertySources[2].properties.HOSTNAME.value'
+        - http :/actuator/env | jq '.propertySources[2].properties.HOSTNAME.value'
+        - http :/actuator/env | jq '.propertySources[2].properties.HOSTNAME.value'
+        - kubectl logs deployment/boot-skaffold-deployment --follow &
+        - http :/
+        - http :/
+        - kubectl delete -f k8s-k3d.yaml
         - docker rm -f -v `docker ps -a -q`
         - cat ~/.config/k3d/k3d/kubeconfig.yaml
         - rm -rf ~/.config/k3d/k3d/kubeconfig.yaml

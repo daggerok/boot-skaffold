@@ -1,0 +1,66 @@
+# k3d create --name k3d --api-port 6551 --publish 80:80 --workers 2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx-deployment
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx-deployment
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+##    - http:
+##        paths:
+##          - path: /
+##            backend:
+##              serviceName: nginx-service
+##              servicePort: 80
+#    - host: example.com
+#      http:
+#        paths:
+#          - backend:
+#              serviceName: nginx-service
+#              servicePort: 80
+    - http:
+        paths:
+          - backend:
+              serviceName: nginx-service
+              servicePort: 80
