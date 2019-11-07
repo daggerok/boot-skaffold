@@ -6,7 +6,9 @@ build:
   artifacts:
     - image: daggerok/boot-skaffold
       context: .
-      jib: {}
+      jib:
+        args:
+          - -e
 deploy:
   kubectl:
     manifests:
