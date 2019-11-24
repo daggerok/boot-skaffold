@@ -194,6 +194,7 @@ http :8080/actuator/info
 ## links
 For further reference, please consider the following sections:
 
+* [GitHub: daggerok/k8s-nginx-ingress-example](https://github.com/daggerok/k8s-nginx-ingress-example)
 * https://www.youtube.com/watch?v=62GLbBDLiPE
 * https://skaffold-latest.firebaseapp.com/docs/pipeline-stages/builders/jib/
 * https://skaffold-latest.firebaseapp.com/docs/references/yaml/
